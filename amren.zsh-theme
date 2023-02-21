@@ -93,23 +93,25 @@ prompt_context() {
 # Git: branch/detached head, dirty status
 prompt_git() {
   local color ref
-  is_dirty() {
-    test -n "$(git status --porcelain --ignore-submodules)"
-  }
-  is_stashing() {
-    test -n "$(git stash list)"
-  }
   ref="$vcs_info_msg_0_"
   if [[ -n "$ref" ]]; then
+    num_changes="$(git status --porcelain | wc -l | tr -d ' ')"
+    num_stashes="$(git stash list | wc -l | tr -d ' ')"
+    is_changed() {
+      [[ $num_changes != "0" ]]
+    }
+    is_stashing() {
+      [[ $num_stashes != "0" ]]
+    }
     color=green
-    if is_dirty; then
+    if is_changed; then
       color=yellow
-      ref="${ref} $PLUSMINUS"
+      ref="${ref} $PLUSMINUS${num_changes}"
     fi
     if is_stashing; then
-      ref="${ref} $STASH"
+      ref="${ref} $STASH${num_stashes}"
     fi
-    if [[ !(is_stashing) && !(is_dirty) ]]; then
+    if [[ !is_changed && !is_stashing ]]; then
       ref="${ref} "
     fi
     if [[ "${ref/.../}" == "$ref" ]]; then
