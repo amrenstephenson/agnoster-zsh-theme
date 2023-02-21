@@ -103,6 +103,9 @@ prompt_git() {
     is_stashing() {
       [[ $num_stashes != "0" ]]
     }
+    is_headless() {
+      [[ "$(git branch --show-current | wc -l | tr -d ' ')" == "0" ]]
+    }
     color=green
     if is_changed; then
       color=yellow
@@ -114,7 +117,7 @@ prompt_git() {
     if [[ !is_changed && !is_stashing ]]; then
       ref="${ref} "
     fi
-    if is_changed; then
+    if is_headless; then
       ref="$DETACHED $ref"
     else
       ref="$BRANCH $ref"
