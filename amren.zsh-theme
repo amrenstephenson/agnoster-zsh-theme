@@ -49,6 +49,7 @@ DETACHED="\u27a6"
 CROSS="\u2718"
 LIGHTNING="\u26a1"
 GEAR="\u2699"
+STASH="\u2347"
 
 # Begin a segment
 # Takes two arguments, background and foreground. Both can be omitted,
@@ -95,13 +96,20 @@ prompt_git() {
   is_dirty() {
     test -n "$(git status --porcelain --ignore-submodules)"
   }
+  is_stashing() {
+    test -n "$(git stash list)"
+  }
   ref="$vcs_info_msg_0_"
   if [[ -n "$ref" ]]; then
+    color=green
     if is_dirty; then
       color=yellow
       ref="${ref} $PLUSMINUS"
-    else
-      color=green
+    fi
+    if is_stashing; then
+      ref="${ref} $STASH"
+    fi
+    if [[ !(is_stashing) && !(is_dirty) ]]; then
       ref="${ref} "
     fi
     if [[ "${ref/.../}" == "$ref" ]]; then
