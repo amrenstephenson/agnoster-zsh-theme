@@ -114,10 +114,10 @@ prompt_git() {
     if [[ !is_changed && !is_stashing ]]; then
       ref="${ref} "
     fi
-    if [[ "${ref/.../}" == "$ref" ]]; then
-      ref="$BRANCH $ref"
-    else
+    if is_changed; then
       ref="$DETACHED ${ref/.../}"
+    else
+      ref="$BRANCH $ref"
     fi
     prompt_segment $color $PRIMARY_FG
     print -n " $ref"
