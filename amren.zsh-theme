@@ -115,7 +115,7 @@ prompt_git() {
       ref="${ref} "
     fi
     if is_changed; then
-      ref="$DETACHED ${ref/.../}"
+      ref="$DETACHED $ref"
     else
       ref="$BRANCH $ref"
     fi
